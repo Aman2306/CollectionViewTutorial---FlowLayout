@@ -21,13 +21,14 @@ class ViewController: UIViewController {
     
     // Constants
     let reuseID = "DataCollectionViewCell"
-    
+    let segueID = "SegueShowDetail"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         for index in 0...21 {
             imageArray.append(UIImage(named: "image\(index)")!)
         }
+//        createGradientLayer()
         callDelegates()
     }
     
@@ -35,6 +36,14 @@ class ViewController: UIViewController {
         collectionViewOutlet.delegate = self
         collectionViewOutlet.dataSource = self
     }
+    
+    func createGradientLayer() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.view.bounds
+        gradientLayer.colors = [UIColor.red.cgColor, UIColor.yellow.cgColor]
+        self.view.layer.addSublayer(gradientLayer)
+    }
+
     
 }
 
@@ -49,12 +58,22 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         return cell
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let vc = storyboard?.instantiateViewController(withIdentifier: "SecondViewController") as? SecondViewController {
+            vc.name = "label"
+            vc.index = indexPath.row
+            self.navigationController?.pushViewController(vc, animated: true)
+        } else {
+            print("error")
+        }
+        
+//        self.navigationController?.pushViewController(vc!, animated: true)
+    }
 }
 
 extension ViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)0
+        return UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -62,7 +81,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         let bounds = collectionView.bounds
 //        print(bounds)
         // Size is relative to screen size so it will work on all devices
-        return CGSize(width: bounds.width/3.0, height: bounds.height / 4) // it's necessary to substract additional space if left or right margin is given
+        return CGSize(width: bounds.width/3.0 - 10, height: bounds.height / 4) // it's necessary to substract additional space if left or right margin is given
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
